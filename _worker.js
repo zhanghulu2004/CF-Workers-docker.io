@@ -496,19 +496,25 @@ export default {
 
 		// 处理token请求
 		if (url.pathname.includes('/token')) {
-			let token_parameter = {
-				headers: {
-					'Host': 'auth.docker.io',
-					'User-Agent': getReqHeader("User-Agent"),
-					'Accept': getReqHeader("Accept"),
-					'Accept-Language': getReqHeader("Accept-Language"),
-					'Accept-Encoding': getReqHeader("Accept-Encoding"),
-					'Connection': 'keep-alive',
-					'Cache-Control': 'max-age=0'
-				}
-			};
-			let token_url = auth_url + url.pathname + url.search;
-			return fetch(new Request(token_url, request), token_parameter);
+		    let token_parameter = {
+		        headers: {
+		            'Host': 'auth.docker.io',
+		            'User-Agent': getReqHeader("User-Agent"),
+		            'Accept': getReqHeader("Accept"),
+		            'Accept-Language': getReqHeader("Accept-Language"),
+		            'Accept-Encoding': getReqHeader("Accept-Encoding"),
+		            'Connection': 'keep-alive',
+		            'Cache-Control': 'max-age=0'
+		        }
+		    };
+		    
+		    // 添加 Authorization 头转发
+		    if (request.headers.has("Authorization")) {
+		        token_parameter.headers.Authorization = getReqHeader("Authorization");
+		    }
+		    
+		    let token_url = auth_url + url.pathname + url.search;
+		    return fetch(new Request(token_url, request), token_parameter);
 		}
 
 		// 修改 /v2/ 请求路径
