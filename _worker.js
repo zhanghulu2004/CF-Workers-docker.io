@@ -1,9 +1,8 @@
-const customDomain = 'docker.mirror.zhanghulu.cn'
+const customDomain = 'mirror.zhanghulu.cn'
 
 const dockerHub = 'https://registry-1.docker.io'
 const routes = {
   // ↓ 这一行是我加的，用不到可以去掉
-  [customDomain]: dockerHub,
   ['docker.' + customDomain]: dockerHub,
   ['quay.' + customDomain]: 'https://quay.io',
   ['gcr.' + customDomain]: 'https://gcr.io',
