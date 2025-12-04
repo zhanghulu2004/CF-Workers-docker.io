@@ -494,34 +494,25 @@ export default {
 			console.log(`handle_url: ${url}`);
 		}
 
-    // 构造 Basic Auth 凭据
-    const username = "zhanghulu";
-    const token = "dckr_pat_OhEFderRh0SDZFv4X1t7pXoloUM";
-    const credentials = btoa(`${username}:${token}`); // 注意：Cloudflare Workers 使用标准 btoa
-    
-    let token_parameter = {
-        headers: {
-            'Host': 'auth.docker.io',
-            'User-Agent': getReqHeader("User-Agent"),
-            'Accept': getReqHeader("Accept"),
-            'Accept-Language': getReqHeader("Accept-Language"),
-            'Accept-Encoding': getReqHeader("Accept-Encoding"),
-            'Connection': 'keep-alive',
-            'Cache-Control': 'max-age=0',
-            'Authorization': `Basic ${credentials}` // ← 强制使用你的 Docker 凭据
-        }
-    };
-    
-    // 可选：如果仍想优先使用请求自带的 Authorization（例如调试时），可保留以下逻辑
-    // 但通常代理场景下应使用固定凭证，避免暴露用户 token
-    /*
-    if (request.headers.has("Authorization")) {
-        token_parameter.headers.Authorization = getReqHeader("Authorization");
-    }
-    */
-    
-    let token_url = auth_url + url.pathname + url.search;
-    return fetch(new Request(token_url, request), token_parameter);
+		let token_parameter = {
+			headers: {
+				'Host': 'auth.docker.io',
+				'User-Agent': getReqHeader("User-Agent"),
+				'Accept': getReqHeader("Accept"),
+				'Accept-Language': getReqHeader("Accept-Language"),
+				'Accept-Encoding': getReqHeader("Accept-Encoding"),
+				'Connection': 'keep-alive',
+				'Cache-Control': 'max-age=0'
+			}
+		};
+		
+		// 添加 Authorization 头转发
+		if (request.headers.has("Authorization")) {
+			token_parameter.headers.Authorization = getReqHeader("Authorization");
+		}
+		
+		let token_url = auth_url + url.pathname + url.search;
+		return fetch(new Request(token_url, request), token_parameter);
 
 		// 修改 /v2/ 请求路径
 		if (hub_host == 'registry-1.docker.io' && /^\/v2\/[^/]+\/[^/]+\/[^/]+$/.test(url.pathname) && !/^\/v2\/library/.test(url.pathname)) {
