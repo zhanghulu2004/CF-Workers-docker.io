@@ -1,5 +1,5 @@
 const DOCKER_REGISTRY = 'https://registry-1.docker.io'
-const PROXY_REGISTRY = 'https://docker.410006.xyz'
+const PROXY_REGISTRY = 'https://docker.mirror.zhanghulu.cn'
 const HTML = `
 <!DOCTYPE html>
 <html lang="zh-CN">
